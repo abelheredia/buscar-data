@@ -50,7 +50,11 @@
   border-radius: 5px;
   padding: 0.5rem 1rem;
   cursor: pointer;
+  margin-bottom: 1.5rem;
+}
 
+.app .form .data {
+  text-align: justify;
 }
 
 @keyframes App-logo-spin {
