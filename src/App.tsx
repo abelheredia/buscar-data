@@ -19,7 +19,9 @@ function App() {
       body: JSON.stringify(tipo_doc === 'ruc' ? { ruc : documento} : { dni : documento })
     };
 
-    fetch(`${process.env.url}/${tipo_doc}`, requestOptions)
+    const url = process.env.REACT_APP_API_URL;
+
+    fetch(`${url}/${tipo_doc}`, requestOptions)
     .then( response => {
       response.json().then(data => {
         setData(data.data);
