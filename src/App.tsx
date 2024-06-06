@@ -19,7 +19,7 @@ function App() {
       body: JSON.stringify(tipo_doc === 'ruc' ? { ruc : documento} : { dni : documento })
     };
 
-    fetch(`https://backend.globalredsalud.com/api/cliente/${tipo_doc}`, requestOptions)
+    fetch(`${process.env.url}/${tipo_doc}`, requestOptions)
     .then( response => {
       response.json().then(data => {
         setData(data.data);
