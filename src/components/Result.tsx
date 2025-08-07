@@ -6,7 +6,7 @@ export const Result = () => {
   const { result } = useResultStore();
 
   return (
-    <Card title="Resultado" variant="borderless" type="inner" style={{ width: '35rem' }}>
+    <Card title="Resultado" variant="borderless" type="inner" style={{ width: '85%' }}>
       <Data result={result} />
     </Card>
   );
