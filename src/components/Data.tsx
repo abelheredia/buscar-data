@@ -13,16 +13,32 @@ export const Data: React.FC<{ result: IResult }> = ({ result }) => {
     );
   };
 
+  const formatDate = (dateString: string) => {
+    const [year, month, day] = dateString.split('-');
+    return `${day}/${month}/${year}`;
+  };
+
+  const calculateAge = (birthDateString: string) => {
+    const today = new Date();
+    const [year, month, day] = birthDateString.split('-').map(Number);
+    const birthDate = new Date(year, month - 1, day);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    if (today.getMonth() < birthDate.getMonth() || (today.getMonth() === birthDate.getMonth() && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
   return (
     <div className="flex flex-col gap-2">
       <>
-        {result.nombre_completo && <Item label="Nombre Completo:" text={result.nombre_completo || ''} />}
         {result.nombres && <Item label="Nombres:" text={result.nombres || ''} />}
         {result.apellido_paterno && <Item label="Apellido Paterno:" text={result.apellido_paterno || ''} />}
         {result.apellido_materno && <Item label="Apellido Materno:" text={result.apellido_materno || ''} />}
         {result.numero && <Item label="Número de Documento:" text={result.numero || ''} />}
         {result.codigo_verificacion && <Item label="Código de Verificación:" text={result.codigo_verificacion || ''} />}
-        {result.fecha_nacimiento && <Item label="Fecha de Nacimiento:" text={result.fecha_nacimiento || ''} />}
+        {result.fecha_nacimiento && <Item label="Fecha de Nacimiento:" text={formatDate(result.fecha_nacimiento) || ''} />}
+        {result.fecha_nacimiento && <Item label="Edad:" text={calculateAge(result.fecha_nacimiento).toString()} />}
         {result.sexo && <Item label="Sexo:" text={result.sexo || ''} />}
         {result.direccion && <Item label="Dirección:" text={result.direccion || ''} />}
         {result.estado && <Item label="Estado:" text={result.estado || ''} />}
