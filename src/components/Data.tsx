@@ -1,10 +1,11 @@
+import { ManOutlined, WomanOutlined } from '@ant-design/icons';
 import { IResult } from '../entities';
 import { Typography } from 'antd';
 
 const { Text } = Typography;
 
 export const Data: React.FC<{ result: IResult }> = ({ result }) => {
-  const Item: React.FC<{ label: string; text: string }> = ({ label, text }) => {
+  const Item: React.FC<{ label: string; text: string | React.ReactNode }> = ({ label, text }) => {
     return (
       <div className="flex items-center gap-2">
         <Text strong>{label}</Text>
@@ -39,7 +40,7 @@ export const Data: React.FC<{ result: IResult }> = ({ result }) => {
         {result.codigo_verificacion && <Item label="Código de Verificación:" text={result.codigo_verificacion || ''} />}
         {result.fecha_nacimiento && <Item label="Fecha de Nacimiento:" text={formatDate(result.fecha_nacimiento) || ''} />}
         {result.fecha_nacimiento && <Item label="Edad:" text={calculateAge(result.fecha_nacimiento).toString()} />}
-        {result.sexo && <Item label="Sexo:" text={result.sexo || ''} />}
+        {result.sexo && <Item label="Sexo:" text={result.sexo?.toLowerCase() === 'masculino' ? <ManOutlined /> : <WomanOutlined />} />}
         {result.direccion && <Item label="Dirección:" text={result.direccion || ''} />}
         {result.estado && <Item label="Estado:" text={result.estado || ''} />}
         {result.razonSocial && <Item label="Razón Social:" text={result.razonSocial} />}

@@ -4,12 +4,16 @@ import { useState } from 'react';
 import { useHistoryStore, useResultStore } from '../stores';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { useAlert } from './useAlert';
 
 export const useSearch = () => {
   const [loading, setLoading] = useState(false);
 
   const { setResult, clearResult } = useResultStore();
+
   const { addToHistory } = useHistoryStore();
+
+  const { alert, showAlert, displayAlert } = useAlert();
 
   const schema = yup.object().shape({
     tipoDocumento: yup.string().required('Tipo de Documento es requerido'),
@@ -38,13 +42,23 @@ export const useSearch = () => {
 
     const url = process.env.REACT_APP_API_URL;
 
-    fetch(`${url}/${tipoDocumento}`, requestOptions).then((response) => {
-      response.json().then((data) => {
-        setResult(data.data);
-        addToHistory(data.data);
-        setLoading(false);
+    try {
+      fetch(`${url}/${tipoDocumento}`, requestOptions).then((response) => {
+        response.json().then((data) => {
+          if (!data.data) {
+            displayAlert(data.msg, 'error');
+            setLoading(false);
+            return;
+          }
+          setResult(data.data);
+          addToHistory(data.data);
+          setLoading(false);
+        });
       });
-    });
+    } catch (error) {
+      displayAlert(String(error), 'error');
+      setLoading(false);
+    }
   };
 
   const clean = () => {
@@ -56,6 +70,8 @@ export const useSearch = () => {
     searchForm,
     loading,
     search,
-    clean
+    clean,
+    alert,
+    showAlert
   };
 };
