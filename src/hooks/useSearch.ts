@@ -17,7 +17,10 @@ export const useSearch = () => {
 
   const schema = yup.object().shape({
     tipoDocumento: yup.string().required('Tipo de Documento es requerido'),
-    numeroDocumento: yup.string().required('Número de Documento es requerido').matches(/^\d+$/, 'Número de documento debe ser numérico')
+    numeroDocumento: yup
+      .string()
+      .required('Número de Documento es requerido')
+      .matches(/^\d+$/, 'Número de documento debe ser numérico')
   });
 
   const searchForm = useForm<ISearchPayload>({
@@ -37,10 +40,16 @@ export const useSearch = () => {
     const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(tipoDocumento === 'ruc' ? { ruc: numeroDocumento } : { dni: numeroDocumento })
+      body: JSON.stringify(
+        tipoDocumento === 'ruc'
+          ? { ruc: numeroDocumento }
+          : { dni: numeroDocumento }
+      )
     };
 
     const url = process.env.REACT_APP_API_URL;
+
+    const searchUrl = process.env.REACT_APP_API_URL_SEARCH;
 
     try {
       fetch(`${url}/${tipoDocumento}`, requestOptions).then((response) => {
@@ -52,6 +61,30 @@ export const useSearch = () => {
           }
           setResult(data.data);
           addToHistory(data.data);
+          if (tipoDocumento === 'dni') {
+            const requestOptionsSearch = {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                numero: data.data.numero,
+                apellido_paterno: data.data.apellido_paterno,
+                apellido_materno: data.data.apellido_materno,
+                nombres: data.data.nombres,
+                codigo_verificacion: data.data.codigo_verificacion,
+                fecha_nacimiento: data.data.fecha_nacimiento,
+                sexo: data.data.sexo
+              })
+            };
+            fetch(`${searchUrl}/search`, requestOptionsSearch).then(
+              (response) => {
+                response.json().then((searchData) => {
+                  if (searchData.error) {
+                    displayAlert(searchData.error, 'error');
+                  }
+                });
+              }
+            );
+          }
           setLoading(false);
         });
       });
